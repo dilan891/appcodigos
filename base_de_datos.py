@@ -15,9 +15,10 @@ def crea_tabla():
     )""")
 
 def Buscar_por_ID(codigo):
+    conectar = sqlite3.connect("base_principal.db")
+    c = conectar.cursor()
     c.execute("""
     SELECT * FROM PRODUCTOS WHERE ID=? """,codigo)
-    print (c.fetchone())
     return c.fetchone()
 
 def Buscar_por_nombre(nombre):
