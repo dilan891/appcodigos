@@ -1,5 +1,5 @@
 import tkinter as tk
-import base_de_datos
+import base_de_datos as BD
 from tkinter import messagebox
 
 app = tk.Tk()  #Abro loop de la aplicacion
@@ -7,6 +7,51 @@ app.geometry("800x400")
 app.resizable(0,0)
 app.config(bg="white")
 app.title("codigos")
+
+def nueva_ventana():
+    add_windows = tk.Toplevel(app)
+    
+    tk.Label(add_windows,text="Codigo").grid(row=0,column=0) 
+    tk.Label(add_windows,text="Nombre").grid(row=0,column=1)    
+    tk.Label(add_windows,text="Nombre2 (opcional)").grid(row=0,column=2)    
+    tk.Label(add_windows,text="Precio").grid(row=0,column=3)
+
+    Nuevocodigo = tk.StringVar()
+    Nuevonombre = tk.StringVar()
+    Nuevonombre2 = tk.StringVar()
+    Nuevoprecio = tk.StringVar()      
+
+    tk.Entry(add_windows,textvariable=Nuevocodigo).grid(row=1,column=0)
+    tk.Entry(add_windows,textvariable=Nuevonombre).grid(row=1,column=1)
+    tk.Entry(add_windows,textvariable=Nuevonombre2).grid(row=1,column=2)
+    tk.Entry(add_windows,textvariable=Nuevoprecio).grid(row=1,column=3)
+    
+    def add_Base():
+        try:
+            BD.insertar_producto(Nuevocodigo.get(),Nuevonombre.get(),Nuevonombre2.get(),Nuevoprecio.get())
+            Nuevocodigo.set("")
+            Nuevonombre.set("")
+            Nuevonombre2.set("")
+            Nuevoprecio.set("")
+        except:
+            messagebox.showerror(title="Error",message="Error al registrar el producto")
+
+    tk.Button(add_windows,text="Añadir",command=lambda: add_Base()).grid(row=2,column=1,columnspan=2)
+
+#configuracion de la barra de menu en la parte superior
+menuBar = tk.Menu(app)
+app.config(menu= menuBar)
+
+filemenu = tk.Menu(menuBar, tearoff=0)
+filemenu.add_command(label="Añadir nuevo producto",command=nueva_ventana)
+filemenu.add_command(label="Actualizar un producto")
+filemenu.add_command(label="Eliminar un producto")
+
+helpmenu = tk.Menu(menuBar, tearoff=0)
+helpmenu.add_command(label="Acerca de...")
+
+menuBar.add_cascade(label="Archivo", menu=filemenu)
+menuBar.add_cascade(label="Ayuda", menu=helpmenu)
 
 global c,n,Precio_actual # variables globales
 c = tk.StringVar()  
@@ -27,9 +72,9 @@ def Resultado_busqueda(event):        # muestra el resultado de la busqueda en b
         if c.get() != "":
             try:
                 codigo = (c.get(),)
-                nombre = base_de_datos.Buscar_por_ID(codigo)[1]
-                precio = base_de_datos.Buscar_por_ID(codigo)[3]
-                codigo = base_de_datos.Buscar_por_ID(codigo)[0]
+                nombre = BD.Buscar_por_ID(codigo)[1]
+                precio = BD.Buscar_por_ID(codigo)[3]
+                codigo = BD.Buscar_por_ID(codigo)[0]
                 precioBS = ("{:,.2f} BS").format(calculo(precio,int(Precio_actual.get())))
                 c.set("")
                 n.set("")
@@ -37,14 +82,19 @@ def Resultado_busqueda(event):        # muestra el resultado de la busqueda en b
                 messagebox.showwarning(title="dolar no dado",message="Valor del dolar en BS no dado")
                 print("valor del dolar no dado")
             except TypeError: 
-                messagebox.showerror(title="Error",message="objeto no existe")
+                messagebox.showerror(title="Error",message="Producto "+c.get()+" no existe")
                 print("+",c.get(),"+")
         if n.get() != "":
-            nombre = "juanito"
-            precio = "0"
-            codigo = "0"
-            precioBS = "0"
-            print("busqueda por nombre")
+            try:
+                nombre = BD.Buscar_por_nombre(n.get())[1]
+                precio = BD.Buscar_por_nombre(n.get())[3]
+                codigo = BD.Buscar_por_nombre(n.get())[0]
+                precioBS = ("{:,.2f} BS").format(calculo(precio,int(Precio_actual.get())))
+            except ValueError:
+                messagebox.showwarning(title="dolar no dado",message="Valor del dolar en BS no dado")
+                print("valor del dolar no dado")
+            except TypeError: 
+                messagebox.showerror(title="Error",message="Producto "+n.get()+" no existe")
     mostrar_codigo(nombre,precio,codigo,precioBS)
 
 contenedor_datos = tk.Frame(app,width=50,height=20,bg="yellow")
