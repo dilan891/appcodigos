@@ -38,14 +38,60 @@ def nueva_ventana():
 
     tk.Button(add_windows,text="Añadir",command=lambda: add_Base()).grid(row=2,column=1,columnspan=2)
 
+def Create_delete_windows():
+    Delete_code = tk.StringVar()
+    Ventana = tk.Toplevel()
+    tk.Label(Ventana,text="Codigo").grid(row=0,column=0)
+    tk.Entry(Ventana,textvariable=Delete_code).grid(row=1,column=0)
+    tk.Button(Ventana,text="Eliminar",command=lambda:BD.eliminar_de_base(Delete_code.get())).grid(row=2,column=0)
+    Delete_code.set("")
+
+def Create_update_windows():
+    update_window = tk.Toplevel()
+    codigo = tk.StringVar()
+    new_code = tk.StringVar()
+    new_name = tk.StringVar()
+    new_name2 = tk.StringVar()
+    new_price = tk.StringVar()
+
+    tk.Label(update_window,width=16,height=2,bg="gray",text="codigo: ").grid(row=0,column=0)
+    tk.Entry(update_window,width=16,bg="gray",textvariable=codigo).grid(row=0,column=1)
+    tk.Label(update_window,width=16,height=2,bg="gray",text="nombre").grid(row=1,column=1,padx=40)
+    tk.Label(update_window,width=16,height=2,bg="gray",text="nombre2").grid(row=1,column=2,padx=40)
+    tk.Label(update_window,width=16,height=2,bg="gray",text="Precio").grid(row=1,column=3,padx=40)
+    tk.Label(update_window,width=16,height=2,bg="gray",text="codigo").grid(row=1,column=0,padx=40)
+
+    tk.Entry(update_window,width=16,bg="gray",textvariable=new_code).grid(row=2,column=0)
+    tk.Entry(update_window,width=16,bg="gray",textvariable=new_name).grid(row=2,column=1)
+    tk.Entry(update_window,width=16,bg="gray",textvariable=new_name2).grid(row=2,column=2)
+    tk.Entry(update_window,width=16,bg="gray",textvariable=new_price).grid(row=2,column=3)
+
+    def busqueda(principal_code,code,name,name2,price):
+        default = BD.Buscar_por_ID(codigo.get())
+        if code == "":
+            code = default[0]
+        if name == "":
+            name = default[1]
+        if name2 == "":
+            name2 = default[2]
+        if price == "":
+            price = default[3]
+        name = name.capitalize()
+        name2 = name2.capitalize()
+        print(default)
+        BD.update_base(principal_code,code,name,name2,price)
+
+    tk.Button(update_window,text="actualizar",command=lambda:busqueda(codigo.get(),new_code.get(),new_name.get(),new_name2.get(),new_price.get())).grid(row=3,column=0)
+    
+
 #configuracion de la barra de menu en la parte superior
 menuBar = tk.Menu(app)
 app.config(menu= menuBar)
 
 filemenu = tk.Menu(menuBar, tearoff=0)
 filemenu.add_command(label="Añadir nuevo producto",command=nueva_ventana)
-filemenu.add_command(label="Actualizar un producto")
-filemenu.add_command(label="Eliminar un producto")
+filemenu.add_command(label="Actualizar un producto",command=Create_update_windows)
+filemenu.add_command(label="Eliminar un producto",command=Create_delete_windows)
 
 helpmenu = tk.Menu(menuBar, tearoff=0)
 helpmenu.add_command(label="Acerca de...")

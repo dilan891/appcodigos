@@ -40,7 +40,19 @@ def Buscar_por_nombre(nombre):
             print("no existe el nombre buscado")
             
 def eliminar_de_base(codigo):
-    c.execute("DELETE FROM PRODUCTOS WHERE ID=? ",codigo)
+    conectar = sqlite3.connect("base_principal.db")
+    c = conectar.cursor()
+    c.execute("DELETE FROM PRODUCTOS WHERE ID=? ",(codigo,))
+    conectar.commit()
+
+def update_base(codigo_principal,codigo,name,name2,price):
+    conectar = sqlite3.connect("base_principal.db")
+    c = conectar.cursor()
+    c.execute("UPDATE PRODUCTOS SET nombre_articulo=? WHERE ID=?",(name,codigo_principal))
+    c.execute("UPDATE PRODUCTOS SET nombre_segundario=? WHERE ID=?",(name2,codigo_principal))
+    c.execute("UPDATE PRODUCTOS SET PRECIO$=? WHERE ID=?",(price,codigo_principal))
+    c.execute("UPDATE PRODUCTOS SET ID=? WHERE ID=?",(codigo,codigo_principal))
+    conectar.commit()
 
 def actualkizar_base_codigo(codigo,nuevoprecio):
     c.execute("UPDATE PRODUCTOS SET PRECIO$=? WHERE ID=?",(nuevoprecio,codigo))
@@ -51,6 +63,8 @@ def actualkizar_base_nombre(codigo,nuevonombre):
 def insertar_producto(codigo,nombreP,nombreS,precio):
     conectar = sqlite3.connect("base_principal.db")
     c = conectar.cursor()
+    nombreP = nombreP.capitalize()
+    nombreS = nombreS.capitalize()
     print(codigo,nombreP,nombreS,precio)
     c.execute("INSERT INTO PRODUCTOS VALUES (?,?,?,?)",(codigo,nombreP,nombreS,precio))
     conectar.commit()

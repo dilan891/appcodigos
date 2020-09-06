@@ -1,2 +1,5 @@
 base_principal.db
 __pycache__/base_de_datos.cpython-38.pyc
+test.py
+__pycache__/app.cpython-38.pyc
+base_de_datos.pyo
