@@ -1,28 +1,29 @@
 import sqlite3
 
 global conectar,c
-
-conectar =sqlite3.connect("base_principal.db")
+try:
+    conectar =sqlite3.connect("appcodigos/database/base_principal.db")
+except:
+    conectar= sqlite3.connect("base_principal.db")
+    
 c = conectar.cursor()
 
 def crea_tabla():
     c.execute("""
         CREATE TABLE PRODUCTOS(
-        "ID" INTERGER(5) PRIMARY KEY,
+        "ID" INTERGER(5) PRIMARY KEY UNIQUE,
         "nombre_articulo" VARCHAR(50) NOT NULL UNIQUE,
         "nombre_segundario" VARCHAR(50),
         "PRECIO$" INTEGER(20) NOT NULL
     )""")
 
 def Buscar_por_ID(codigo):
-    conectar = sqlite3.connect("base_principal.db")
     c = conectar.cursor()
     c.execute("""
     SELECT * FROM PRODUCTOS WHERE ID=? """,codigo)
     return c.fetchone()
 
 def Buscar_por_nombre(nombre):
-    conectar = sqlite3.connect("base_principal.db")
     c = conectar.cursor()
     nombre = nombre.capitalize()
     c.execute("SELECT * FROM PRODUCTOS WHERE nombre_articulo=? ",(nombre,))
@@ -40,13 +41,11 @@ def Buscar_por_nombre(nombre):
             print("no existe el nombre buscado")
             
 def eliminar_de_base(codigo):
-    conectar = sqlite3.connect("base_principal.db")
     c = conectar.cursor()
     c.execute("DELETE FROM PRODUCTOS WHERE ID=? ",(codigo,))
     conectar.commit()
 
 def update_base(codigo_principal,codigo,name,name2,price):
-    conectar = sqlite3.connect("base_principal.db")
     c = conectar.cursor()
     c.execute("UPDATE PRODUCTOS SET nombre_articulo=? WHERE ID=?",(name,codigo_principal))
     c.execute("UPDATE PRODUCTOS SET nombre_segundario=? WHERE ID=?",(name2,codigo_principal))
@@ -61,7 +60,6 @@ def actualkizar_base_nombre(codigo,nuevonombre):
     c.execute("UPDATE PRODUCTOS SET nombre_articulo=? WHERE ID=?",(nuevonombre,codigo))
 
 def insertar_producto(codigo,nombreP,nombreS,precio):
-    conectar = sqlite3.connect("base_principal.db")
     c = conectar.cursor()
     nombreP = nombreP.capitalize()
     nombreS = nombreS.capitalize()
@@ -70,4 +68,3 @@ def insertar_producto(codigo,nombreP,nombreS,precio):
     conectar.commit()
 
 conectar.commit()
-conectar.close()

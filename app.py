@@ -33,7 +33,7 @@ def nueva_ventana():
             Nuevonombre.set("")
             Nuevonombre2.set("")
             Nuevoprecio.set("")
-        except:
+        except IndexError:
             messagebox.showerror(title="Error",message="Error al registrar el producto")
 
     tk.Button(add_windows,text="Añadir",command=lambda: add_Base()).grid(row=2,column=1,columnspan=2)
