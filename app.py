@@ -1,9 +1,9 @@
-import tkinter as tk
+import tkinter as tk                #modulos y librerias necesarias
 import base_de_datos as BD
 from tkinter import messagebox
 
 app = tk.Tk()  #Abro loop de la aplicacion
-app.geometry("800x400")
+app.geometry("950x400")
 app.resizable(0,0)
 app.config(bg="white")
 app.title("codigos")
@@ -77,13 +77,15 @@ def Create_update_windows():
         if price == "":
             price = default[3]
         name = name.capitalize()
-        name2 = name2.capitalize()
+        try:
+            name2 = name2.capitalize()
+        except:
+            print("no name2")
         print(default)
         BD.update_base(principal_code,code,name,name2,price)
 
     tk.Button(update_window,text="actualizar",command=lambda:busqueda(codigo.get(),new_code.get(),new_name.get(),new_name2.get(),new_price.get())).grid(row=3,column=0)
     
-
 #configuracion de la barra de menu en la parte superior
 menuBar = tk.Menu(app)
 app.config(menu= menuBar)
@@ -124,7 +126,7 @@ def Resultado_busqueda(event):        # muestra el resultado de la busqueda en b
                 precioBS = ("{:,.2f} BS").format(calculo(precio,int(Precio_actual.get())))
                 c.set("")
                 n.set("")
-            except ValueError:
+            except ValueError:                      #si no se ha escrito el precio en bolivares muestra en error
                 messagebox.showwarning(title="dolar no dado",message="Valor del dolar en BS no dado")
                 print("valor del dolar no dado")
             except TypeError: 
@@ -147,11 +149,11 @@ contenedor_datos = tk.Frame(app,width=50,height=20,bg="yellow")
 contenedor_datos.grid(row=2,column=0,padx=0,columnspan=4,pady=40)
 
 def mostrar_codigo(nombre,precio,codigo,precioBS):
-    tk.Label(contenedor_datos,width=16,height=2,bg="gray",text="nombre").grid(row=1,column=1,padx=40)
+    tk.Label(contenedor_datos,width=40,height=2,bg="gray",text="Nombre").grid(row=1,column=1,padx=40)
     tk.Label(contenedor_datos,width=16,height=2,bg="gray",text="Precio").grid(row=1,column=2,padx=40)
     tk.Label(contenedor_datos,width=16,height=2,bg="gray",text="PrecioBS").grid(row=1,column=3,padx=40)
-    tk.Label(contenedor_datos,width=16,height=2,bg="gray",text="codigo").grid(row=1,column=0,padx=40)
-    nombre_producto = tk.Label(contenedor_datos,width=16,height=2,bg="gray",text=nombre)
+    tk.Label(contenedor_datos,width=16,height=2,bg="gray",text="Codigo").grid(row=1,column=0,padx=40)
+    nombre_producto = tk.Label(contenedor_datos,width=40,height=2,bg="gray",text=nombre)
     nombre_producto.grid(row=2,column=1,padx=40)
     precio_label = tk.Label(contenedor_datos,width=16,height=2,bg="gray",text=str(precio) + " $")
     precio_label.grid(row=2,column=2,padx=40)
@@ -166,15 +168,16 @@ def destruir(num1,num2,num3):
 contenedor_superior = tk.Frame(app,width=50,height=20,bg="yellow")
 contenedor_superior.grid(row=0,column=0,columnspan=4,pady=10)
 
-mostrar_codigo("","","","")
+mostrar_codigo("---","0","0","0")
 
+#labels y entrys de inicio y obtencion de datos
 tk.Label(contenedor_superior,width=16,height=2,bg="gray",text="codigo: ").grid(row=0,column=0)
 Ncodigo= tk.Entry(contenedor_superior,width=16,bg="gray",textvariable=c)
 Ncodigo.grid(row=0,column=1)
 tk.Label(contenedor_superior,width=16,height=2,bg="gray",text="Nombre:").grid(row=0,column=2)
 tk.Entry(contenedor_superior,width=16,bg="gray",textvariable=n).grid(row=0,column=3)
 tk.Label(app,width=16,height=2,bg="gray",text="precio dolar actual:").grid(row=4,column=0)
-tk.Entry(app,width=16,bg="gray",textvariable=Precio_actual).grid(row=4,column=1,padx=10)
+tk.Entry(app,width=16,bg="gray",textvariable=Precio_actual).grid(row=4,column=1,padx=0)
 
 Ncodigo.bind("<Return>",Resultado_busqueda)
 
